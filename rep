@@ -1,51 +1,26 @@
-
-
 import os
-
 from dotenv import load_dotenv
-
 from telegram import Update
-
 from telegram.ext import Updater, CommandHandler, MessageHandler, Filters, CallbackContext
-
 from telegram.ext import ConversationHandler
-
 from telegram.ext import CallbackQueryHandler
-
 from telegram import InlineKeyboardMarkup, InlineKeyboardButton
-
 from telegram.ext import messagequeue as mq
-
 from python_telegram_bot_menu import BotMenu, ButtonMenuState
-
 from python_telegram_bot_menu.button_location import ButtonLocation
-
 load_dotenv()
-
 registered_users = []
-
 pending_users = []
-
 admin_user_id = int(os.getenv('ADMIN_USER_ID'))
-
 chat_pairs = []
-
 faq = """
-
 Привет! Я бот для синхронизации чатов WhatsApp и Telegram.
-
 Вот список доступных команд:
-
 /start - Начать взаимодействие с ботом
-
 /accept - Акцептировать ожидающего пользователя (только для администратора)
-
 /add_pair - Добавить новую пару синхронизируемых чатов (только для зарегистрированных пользователей)
-
 /help - Показать эту справку с инструкцией
-
 """
-
 STATE_MAIN_MENU = 1
 
 STATE_ADD_PAIR = 2
