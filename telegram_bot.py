@@ -1,17 +1,24 @@
 from telegram import Bot
-import os
-from dotenv import load_dotenv
-from telegram import Update, Bot, ParseMode, InputMediaPhoto, InputMediaVideo, Update
+from telegram import Update
+from telegram.ext import Updater
+from telegram.ext import CallbackContext
+from telegram.ext import CommandHandler
 from telegram.utils.request import Request
-from queue import Queue
-from telegram.ext import (
-    Updater,
-    CommandHandler,
-    MessageHandler,
-    CallbackContext,
-    ConversationHandler,
-    filters,
-)
+
+request = Request(con_pool_size=8)
+bot = Bot(token=telegram_bot_token, request=request)
+update_queue = Queue()  # Use Queue from queue or multiprocessing if needed
+update = Update(update_id=0, message=None)  # Create an Update object to be put in the queue
+update_queue.put(update)
+
+def start(update: Update, context: CallbackContext) -> None:
+    update.message.reply_text('Hello World')
+
+start_handler = CommandHandler('start', start)
+dispatcher.add_handler(start_handler)
+
+updater = Updater(bot=bot, update_queue=update_queue, use_context=True)
+updater.start_polling()
 
 # Загрузка переменных окружения из файла .env
 load_dotenv('APA.env')
