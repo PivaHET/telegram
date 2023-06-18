@@ -1,3 +1,4 @@
+from telegram import Bot
 import os
 from dotenv import load_dotenv
 from telegram import Update
@@ -100,7 +101,7 @@ def add_pair_input(update: Update, context: CallbackContext) -> None:
 
 # Основная функция
 def main() -> None:
-    load_dotenv()
+    load_dotenv('APA.env')
 
     telegram_bot_token = os.getenv('TELEGRAM_BOT_TOKEN')
     admin_user_id_env = os.getenv('ADMIN_USER_ID')
