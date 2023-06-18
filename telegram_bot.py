@@ -76,9 +76,6 @@ def add_pair(update: Update, context: CallbackContext) -> None:
         context.bot.send_message(chat_id=user_id, text="Пожалуйста, введите пару чатов в формате:\nWhatsApp Чат\nTelegram Чат")
         return STATE_ADD_PAIR
     else:
-        context.bot.send_message(chat_id=user_id, text="Вы не зарегистрированИзвините за прерывание. Вот продолжение кода:
-
-```python
         context.bot.send_message(chat_id=user_id, text="Вы не зарегистрированы.")
 
 # Ввод пары
