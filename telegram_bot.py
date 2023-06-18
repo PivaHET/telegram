@@ -7,7 +7,7 @@ from telegram.ext import (
     MessageHandler,
     CallbackContext,
     ConversationHandler,
-    Filters,
+    filters,
 )
 
 # Загрузка переменных окружения из файла .env
