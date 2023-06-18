@@ -107,7 +107,7 @@ def main() -> None:
     admin_user_id_env = os.getenv('ADMIN_USER_ID')
     admin_user_id = int(admin_user_id_env)
 
-    updater = Updater(token=telegram_bot_token, use_context=True)
+    updater = Updater(telegram_bot_token, use_context=True)
     dispatcher = updater.dispatcher
 
     start_handler = CommandHandler('start', start)
