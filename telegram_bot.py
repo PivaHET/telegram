@@ -11,7 +11,7 @@ from telegram.ext import (
 )
 
 # Загрузка переменных окружения из файла .env
-load_dotenv('.env')
+load_dotenv('APA.env')
 
 # Получение переменных окружения
 telegram_bot_token = os.getenv('TELEGRAM_BOT_TOKEN')
