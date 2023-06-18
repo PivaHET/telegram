@@ -1,7 +1,9 @@
 from telegram import Bot
 import os
 from dotenv import load_dotenv
-from telegram import Update
+from telegram import Update, Bot, ParseMode, InputMediaPhoto, InputMediaVideo, Update
+from telegram.utils.request import Request
+from queue import Queue
 from telegram.ext import (
     Updater,
     CommandHandler,
