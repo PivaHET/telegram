@@ -10,37 +10,50 @@ from telegram.ext import (
     Filters,
 )
 
+# Загрузка переменных окружения из файла .env
 load_dotenv('.env')
 
+# Получение переменных окружения
 telegram_bot_token = os.getenv('TELEGRAM_BOT_TOKEN')
 admin_user_id = os.getenv('ADMIN_USER_ID')
 
+# Проверка наличия переменных окружения
+if not telegram_bot_token or not admin_user_id:
+    raise ValueError("Отсутствуют необходимые переменные окружения")
+
+# Преобразование admin_user_id в int
+admin_user_id = int(admin_user_id)
+
+# Инициализация списков пользователей
 registered_users = []
 pending_users = []
-admin_user_id = int(admin_user_id)
 chat_pairs = []
 
+# Определение состояний беседы
 STATE_MAIN_MENU = 1
 STATE_ADD_PAIR = 2
 
+# Обработка входящих сообщений
 def handle_message(update: Update, context: CallbackContext) -> None:
     user_id = update.effective_user.id
 
     if user_id in registered_users:
         text = update.message.text
-        context.bot.send_message(chat_id=user_id, text=f"Сообщение получено: {text}")
+        context.bot.send_message(chat_id=user_id, text=f"Вы сказали: {text}")
     else:
-        context.bot.send_message(chat_id=user_id, text="Вам необходимо пройти регистрацию и акцепцию администратора.")
+        context.bot.send_message(chat_id=user_id, text="Вы не зарегистрированы.")
 
+# Команда start
 def start(update: Update, context: CallbackContext) -> None:
     user_id = update.effective_user.id
 
     if user_id == admin_user_id:
-        context.bot.send_message(chat_id=user_id, text="Вы администратор бота.")
+        context.bot.send_message(chat_id=user_id, text="Привет, админ!")
     else:
-        context.bot.send_message(chat_id=user_id, text="Добро пожаловать! Ожидайте акцепции администратора.")
+        context.bot.send_message(chat_id=user_id, text="Вы не зарегистрированы. Запрос на регистрацию отправлен админу.")
         pending_users.append(user_id)
 
+# Команда принятия пользователя
 def accept_user(update: Update, context: CallbackContext) -> None:
     user_id = update.effective_user.id
 
@@ -48,22 +61,27 @@ def accept_user(update: Update, context: CallbackContext) -> None:
         if len(pending_users) > 0:
             accepted_user_id = pending_users.pop(0)
             registered_users.append(accepted_user_id)
-            context.bot.send_message(chat_id=accepted_user_id, text="Ваш аккаунт акцептирован.")
-            context.bot.send_message(chat_id=user_id, text="Пользователь акцептирован.")
+            context.bot.send_message(chat_id=accepted_user_id, text="Вы теперь зарегистрированы.")
+            context.bot.send_message(chat_id=user_id, text="Пользователь был зарегистрирован.")
         else:
-            context.bot.send_message(chat_id=user_id, text="Нет пользователей, ожидающих акцепции.")
+            context.bot.send_message(chat_id=user_id, text="Нет пользователей для регистрации.")
     else:
-        context.bot.send_message(chat_id=user_id, text="У вас нет прав на выполнение этой команды.")
+        context.bot.send_message(chat_id=user_id, text="Вы не админ.")
 
+# Команда добавления пары
 def add_pair(update: Update, context: CallbackContext) -> None:
     user_id = update.effective_user.id
 
     if user_id in registered_users:
-        context.bot.send_message(chat_id=user_id, text="Введите пару синхронизируемых чатов в формате:\nWhatsApp Chat\nTelegram Chat")
+        context.bot.send_message(chat_id=user_id, text="Пожалуйста, введите пару чатов в формате:\nWhatsApp Чат\nTelegram Чат")
         return STATE_ADD_PAIR
     else:
-        context.bot.send_message(chat_id=user_id, text="Вам необходимо пройти регистрацию и акцепцию администратора.")
+        context.bot.send_message(chat_id=user_id, text="Вы не зарегистрированИзвините за прерывание. Вот продолжение кода:
 
+```python
+        context.bot.send_message(chat_id=user_id, text="Вы не зарегистрированы.")
+
+# Ввод пары
 def add_pair_input(update: Update, context: CallbackContext) -> None:
     user_id = update.effective_user.id
     text = update.message.text
@@ -76,13 +94,14 @@ def add_pair_input(update: Update, context: CallbackContext) -> None:
 
         chat_pairs.append((whatsapp_chat, telegram_chat))
 
-        response = f"Новая пара синхронизиизируемых чатов добавлена:\nWhatsApp: {whatsapp_chat}\nTelegram: {telegram_chat}"
+        response = f"Пара чатов добавлена:\nWhatsApp: {whatsapp_chat}\nTelegram: {telegram_chat}"
         context.bot.send_message(chat_id=user_id, text=response)
     else:
-        context.bot.send_message(chat_id=user_id, text="Неверный формат ввода. Введите пару синхронизируемых чатов в формате:\nWhatsApp Chat\nTelegram Chat")
+        context.bot.send_message(chat_id=user_id, text="Неверный формат. Введите пару чатов в формате:\nWhatsApp Чат\nTelegram Чат")
 
     return STATE_MAIN_MENU
 
+# Основная функция
 def main() -> None:
     load_dotenv()
 
