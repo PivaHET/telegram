@@ -2,14 +2,12 @@ import os
 from queue import Queue
 from telegram import Bot
 from telegram import Update
-from telegram.ext import Updater
-from telegram.ext import CallbackContext
-from telegram.ext import CommandHandler
-from telegram import Update
+from telegram.ext import Updater, CommandHandler, CallbackContext
 from telegram.ext import Filters
-from telegram.ext import ConversationHandler, MessageHandler, CallbackContext
+from telegram.ext import ConversationHandler, MessageHandler
 from telegram.utils.request import Request
 from dotenv import load_dotenv
+import logging
 
 # Загрузка переменных окружения из файла .env
 load_dotenv('APA.env')
@@ -77,8 +75,9 @@ def accept_user(update: Update, context: CallbackContext) -> None:
 
 # Команда добавления пары
 def add_pair(update: Update, context: CallbackContext) -> None:
-    user_id = update.effective_user.id
+    user_id = update.effective_userИзвините за прерывание, мой ответ был слишком длинным. Продолжим:
 
+```python
     if user_id in registered_users:
         context.bot.send_message(chat_id=user_id, text="Пожалуйста, введите пару чатов в формате:\nWhatsApp Чат\nTelegram Чат")
         return STATE_ADD_PAIR
@@ -105,6 +104,16 @@ def add_pair_input(update: Update, context: CallbackContext) -> None:
 
     return STATE_MAIN_MENU
 
+# Команда help
+def help_command(update: Update, context: CallbackContext) -> None:
+    help_text = """
+    Доступные команды:
+    /start - начать работу с ботом
+    /accept - принять пользователя
+    /add_pair - добавить пару чатов
+    """
+    context.bot.send_message(chat_id=update.effective_chat.id, text=help_text)
+
 # Основная функция
 def main() -> None:
     updater = Updater(telegram_bot_token, use_context=True)
@@ -118,6 +127,9 @@ def main() -> None:
 
     add_pair_handler = CommandHandler('add_pair', add_pair)
     dispatcher.add_handler(add_pair_handler)
+
+    help_handler = CommandHandler('help', help_command)
+    dispatcher.add_handler(help_handler)
 
     conv_handler = ConversationHandler(
         entry_points=[CommandHandler('add_pair', add_pair)],
@@ -140,3 +152,4 @@ def main() -> None:
 
 if __name__ == '__main__':
     main()
+
