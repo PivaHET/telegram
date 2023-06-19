@@ -5,7 +5,9 @@ from telegram import Update
 from telegram.ext import Updater
 from telegram.ext import CallbackContext
 from telegram.ext import CommandHandler
-from telegram.ext import ConversationHandler, MessageHandler, Filters
+from telegram import Update
+from telegram.ext import Filters
+from telegram.ext import ConversationHandler, MessageHandler, CallbackContext
 from telegram.utils.request import Request
 from dotenv import load_dotenv
 
