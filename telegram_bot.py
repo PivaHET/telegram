@@ -78,9 +78,6 @@ def add_pair(update: Update, context: CallbackContext) -> None:
     user_id = update.effective_user.id
 
     if user_id in registered_users:
-        context.bot.send_message(chat_id=user_id, textПродолжение исправленного кода без номеров строк:
-
-```python
         context.bot.send_message(chat_id=user_id, text="Пожалуйста, введите пару чатов в формате:\nWhatsApp Чат\nTelegram Чат")
         return STATE_ADD_PAIR
     else:
