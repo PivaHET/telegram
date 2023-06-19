@@ -1,25 +1,13 @@
 import os
+from queue import Queue
 from telegram import Bot
 from telegram import Update
 from telegram.ext import Updater
 from telegram.ext import CallbackContext
 from telegram.ext import CommandHandler
+from telegram.ext import ConversationHandler, MessageHandler, Filters
 from telegram.utils.request import Request
-
-request = Request(con_pool_size=8)
-bot = Bot(token=telegram_bot_token, request=request)
-update_queue = Queue()  # Use Queue from queue or multiprocessing if needed
-update = Update(update_id=0, message=None)  # Create an Update object to be put in the queue
-update_queue.put(update)
-
-def start(update: Update, context: CallbackContext) -> None:
-    update.message.reply_text('Hello World')
-
-start_handler = CommandHandler('start', start)
-dispatcher.add_handler(start_handler)
-
-updater = Updater(bot=bot, update_queue=update_queue, use_context=True)
-updater.start_polling()
+from dotenv import load_dotenv
 
 # Загрузка переменных окружения из файла .env
 load_dotenv('APA.env')
@@ -34,6 +22,12 @@ if not telegram_bot_token or not admin_user_id:
 
 # Преобразование admin_user_id в int
 admin_user_id = int(admin_user_id)
+
+request = Request(con_pool_size=8)
+bot = Bot(token=telegram_bot_token, request=request)
+update_queue = Queue()  # Use Queue from queue or multiprocessing if needed
+update = Update(update_id=0, message=None)  # Create an Update object to be put in the queue
+update_queue.put(update)
 
 # Инициализация списков пользователей
 registered_users = []
@@ -84,6 +78,9 @@ def add_pair(update: Update, context: CallbackContext) -> None:
     user_id = update.effective_user.id
 
     if user_id in registered_users:
+        context.bot.send_message(chat_id=user_id, textПродолжение исправленного кода без номеров строк:
+
+```python
         context.bot.send_message(chat_id=user_id, text="Пожалуйста, введите пару чатов в формате:\nWhatsApp Чат\nTelegram Чат")
         return STATE_ADD_PAIR
     else:
@@ -111,12 +108,6 @@ def add_pair_input(update: Update, context: CallbackContext) -> None:
 
 # Основная функция
 def main() -> None:
-    load_dotenv('APA.env')
-
-    telegram_bot_token = os.getenv('TELEGRAM_BOT_TOKEN')
-    admin_user_id_env = os.getenv('ADMIN_USER_ID')
-    admin_user_id = int(admin_user_id_env)
-
     updater = Updater(telegram_bot_token, use_context=True)
     dispatcher = updater.dispatcher
 
@@ -141,7 +132,7 @@ def main() -> None:
                 MessageHandler(Filters.text, add_pair_input)
             ]
         },
-        fallbacks=[]
+        fallbacks=[CommandHandler('start', start)]
     )
     dispatcher.add_handler(conv_handler)
 
